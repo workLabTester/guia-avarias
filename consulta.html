@@ -1,51 +1,284 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gestao de Avarias</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:#1a1a2e;font-family:"Segoe UI",sans-serif;}
-.login-box{text-align:center;color:white;background:#16213e;padding:40px;border-radius:15px;box-shadow:0 10px 40px rgba(0,0,0,0.5);max-width:400px;width:90%;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
-.login-box h2{color:#17a2b8;margin-bottom:20px;}
-.login-box input{width:100%;padding:12px;border-radius:8px;border:2px solid #2c5a6e;background:#0d1117;color:white;font-size:16px;text-align:center;margin-bottom:15px;}
-.login-box input:focus{border-color:#17a2b8;outline:none;}
-.login-box button{width:100%;background:#17a2b8;color:white;border:none;padding:12px;border-radius:8px;cursor:pointer;font-size:16px;font-weight:bold;}
-.login-box button:hover{background:#138496;}
-.erro{color:#ff6b6b;margin-top:10px;font-size:13px;min-height:20px;}
-.info{color:#888;font-size:11px;margin-top:20px;}
-.logo{font-size:50px;margin-bottom:15px;}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Avarias - Consulta</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a3a4f">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Roboto, sans-serif; background: #e9ecef; color: #000; }
+        
+        /* Login */
+        .login-box { max-width: 350px; margin: 60px auto; background: white; border-radius: 20px; padding: 30px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        .login-box h2 { color: #1a3a4f; margin-bottom: 15px; font-size: 20px; }
+        .login-box input { width: 100%; padding: 14px; margin: 8px 0; border: 2px solid #ced4da; border-radius: 10px; font-size: 16px; text-align: center; }
+        .login-box button { width: 100%; padding: 14px; background: #17a2b8; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .erro { color: #dc3545; font-size: 12px; margin-top: 8px; }
+        
+        .container { max-width: 800px; margin: 0 auto; padding: 15px; }
+        .voltar { text-align: center; margin: 15px 0; }
+        .voltar a { color: #17a2b8; text-decoration: none; font-size: 13px; font-weight: 600; cursor: pointer; }
+        .total { text-align: center; font-size: 12px; color: #666; margin: 10px 0; }
+        .hidden { display: none; }
+        
+        /* ========== ESTILO EXATO DE IMPRESSÃO ========== */
+        .ncr-pagina {
+            background: white;
+            max-width: 750px;
+            margin: 0 auto 20px auto;
+            padding: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+            border-radius: 4px;
+        }
+        
+        /* Cabeçalho estilo impressão */
+        .cabecalho-print {
+            border: 3px solid #1a3a4f;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        .cabecalho-topo {
+            background: #1a3a4f;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .cabecalho-logo {
+            width: 70px; height: 70px;
+            background: white; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            font-weight: bold; font-size: 20px; color: #1a3a4f;
+        }
+        .cabecalho-titulo h2 { font-size: 20px; font-weight: bold; color: white; line-height: 1.3; }
+        .cabecalho-titulo p { font-size: 12px; color: #c7b27b; margin-top: 4px; }
+        .cabecalho-dados {
+            padding: 10px 15px;
+            background: white;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px 30px;
+            font-size: 12px;
+            color: #1a3a4f;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .cabecalho-dados span { white-space: nowrap; }
+        
+        /* Secções */
+        .secao {
+            border: 1px solid #ccc;
+            background: #f8f9fa;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 0;
+        }
+        .secao-titulo {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 10px;
+            border-left: 3px solid #c7b27b;
+            padding-left: 10px;
+            color: #1a3a4f;
+        }
+        
+        /* Campos */
+        .row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
+        .field-group { flex: 1; min-width: 150px; margin-bottom: 4px; }
+        .field-group label { font-weight: 600; font-size: 10px; display: block; margin-bottom: 2px; color: #2c3e50; }
+        .field-group .valor { font-size: 13px; border-bottom: 1px dotted #ccc; padding: 2px 0; min-height: 18px; color: #000; }
+        
+        /* Textareas */
+        .texto-cheio {
+            border: 1px solid #999;
+            background: white;
+            padding: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            min-height: 60px;
+            color: #000;
+        }
+        
+        /* Assinaturas */
+        .assinaturas { display: flex; gap: 20px; margin-top: 20px; }
+        .assinatura { flex: 1; text-align: center; }
+        .assinatura .linha { border-bottom: 1px solid #000; height: 35px; margin-bottom: 4px; }
+        .assinatura .nome { font-size: 12px; font-weight: bold; }
+        .assinatura .cargo { font-size: 10px; color: #666; }
+        
+        /* Fotos */
+        .fotos-area { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0; }
+        .foto-item { width: 150px; border: 1px solid #ccc; padding: 4px; background: white; }
+        .foto-item img { width: 100%; height: 120px; object-fit: contain; background: #f0f0f0; }
+        .foto-item .legenda { font-size: 9px; text-align: center; padding: 2px; }
+        
+        /* Botão expandir */
+        .btn-expand { background: #1a3a4f; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; width: 100%; margin: 8px 0; }
+        
+        @media print {
+            body { background: white; padding: 0; }
+            .ncr-pagina { box-shadow: none; max-width: 100%; padding: 5px; }
+            .btn-expand, .voltar, .total { display: none; }
+            .secao { page-break-inside: avoid; }
+            @page { margin: 0.6cm; size: A4; }
+        }
+    </style>
 </head>
 <body>
-<div class="login-box" id="loginBox">
-<div class="logo">🔐</div>
-<h2>Gestao de Avarias</h2>
-<p style="color:#aaa;margin-bottom:20px;font-size:14px;">Sistema Protegido</p>
-<input type="password" id="senhaInput" placeholder="Digite a senha de acesso">
-<button onclick="desencriptar()">🔓 Aceder ao Sistema</button>
-<div id="erroMsg" class="erro"></div>
-<div class="info">v2.0 - Codigo Protegido</div>
+
+<div id="telaLogin">
+    <div class="login-box">
+        <h2>🔐 GESTÃO DE AVARIAS</h2>
+        <p style="color:#666;font-size:13px;">Consulta de NCRs</p>
+        <input type="text" id="clienteInput" placeholder="Nome do Cliente" value="" autocomplete="off">
+        <button onclick="consultar()">📋 Ver NCRs</button>
+        <div id="erroLogin" class="erro"></div>
+    </div>
 </div>
+
+<div id="telaResultados" class="hidden">
+    <div class="container" id="listaNCRs"></div>
+    <div class="total" id="totalNCRs"></div>
+    <div class="voltar"><a onclick="voltar()">← Consultar outro cliente</a></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-var ENCRYPTED_CODE = "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";
-function desencriptar() {
-  var s = document.getElementById("senhaInput").value;
-  var e = document.getElementById("erroMsg");
-  if (!s) { e.innerText = "❌ Digite a senha"; return; }
-  try {
-    var d = CryptoJS.AES.decrypt(ENCRYPTED_CODE, s);
-    var c = d.toString(CryptoJS.enc.Utf8);
-    if (!c || c.length < 100) { e.innerText = "❌ Senha incorreta"; return; }
-    document.getElementById("loginBox").style.display = "none";
-    document.write(c);
-    document.close();
-  } catch(err) {
-    e.innerText = "❌ Senha incorreta ou ficheiro corrompido";
-  }
+var SUPABASE_URL = "https://aluqpenxefjfryunzlsm.supabase.co";
+var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsdXFwZW54ZWZqZnJ5dW56bHNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4MDY5NzMsImV4cCI6MjA5NDM4Mjk3M30.KUJKZd3Oc9ytFUUrLaK-W9ckWkQQS2kXTSBMU9x50tM";
+var supabaseClient = null;
+var params = new URLSearchParams(window.location.search);
+var clienteURL = params.get('cliente');
+if (clienteURL) document.getElementById('clienteInput').value = clienteURL;
+
+function voltar() {
+    document.getElementById('telaLogin').classList.remove('hidden');
+    document.getElementById('telaResultados').classList.add('hidden');
+    document.getElementById('clienteInput').value = '';
 }
+
+async function consultar() {
+    var cliente = document.getElementById('clienteInput').value.trim();
+    if (!cliente) { document.getElementById('erroLogin').innerText = '❌ Digite o nome do cliente'; return; }
+    try {
+        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        var resp = await supabaseClient.from('ncrs').select('*').ilike('clientenome', '%' + cliente + '%').order('datacriacao', { ascending: false }).limit(50);
+        if (resp.data && resp.data.length > 0) {
+            document.getElementById('telaLogin').classList.add('hidden');
+            document.getElementById('telaResultados').classList.remove('hidden');
+            mostrarNCRs(resp.data);
+        } else {
+            document.getElementById('erroLogin').innerText = '❌ Nenhum NCR encontrado';
+        }
+    } catch(e) { document.getElementById('erroLogin').innerText = '❌ Erro de conexão'; }
+}
+
+function mostrarNCRs(ncrs) {
+    var html = '';
+    ncrs.forEach(function(n) {
+        var dataF = n.dataanalise ? new Date(n.dataanalise + 'T00:00:00').toLocaleDateString('pt-PT') : '-';
+        var dataV = n.dataverificacao ? new Date(n.dataverificacao + 'T00:00:00').toLocaleDateString('pt-PT') : '';
+        var dataC = n.datacompra ? new Date(n.datacompra + 'T00:00:00').toLocaleDateString('pt-PT') : '';
+        
+        html += '<div class="ncr-pagina">';
+        
+        // ========== CABEÇALHO IMPRESSÃO ==========
+        html += '<div class="cabecalho-print">';
+        html += '<div class="cabecalho-topo">';
+        html += '<div class="cabecalho-logo">GA</div>';
+        html += '<div class="cabecalho-titulo"><h2>GESTÃO DE AVARIAS - NCR</h2><p>Consultoria e Fiscalização | Instalações Técnicas Especiais</p></div>';
+        html += '</div>';
+        html += '<div class="cabecalho-dados">';
+        html += '<span><strong>🏢 Cliente:</strong> ' + (n.clientenome || '-') + '</span>';
+        html += '<span><strong>📄 NCR:</strong> ' + (n.id || '-') + '</span>';
+        html += '</div>';
+        html += '<div class="cabecalho-dados">';
+        html += '<span><strong>🔍 Técnico:</strong> ' + (n.tecnico || '-') + '</span>';
+        html += '<span><strong>📍 Local:</strong> ' + (n.localinstal || '-') + '</span>';
+        html += '</div>';
+        html += '<div class="cabecalho-dados">';
+        html += '<span><strong>⚙️ Processo:</strong> ' + (n.funcaoprocesso || '-') + '</span>';
+        html += '<span><strong>📅 Data:</strong> ' + dataF + '</span>';
+        html += '</div>';
+        html += '</div>';
+        
+        // ========== EQUIPAMENTO ==========
+        html += '<div class="secao"><div class="secao-titulo">🔧 EQUIPAMENTO</div>';
+        html += '<div class="row">';
+        html += '<div class="field-group"><label>Tipo</label><div class="valor">' + (n.tipoequip || '') + '</div></div>';
+        html += '<div class="field-group"><label>Marca</label><div class="valor">' + (n.marcaequip || '') + '</div></div>';
+        html += '<div class="field-group"><label>Modelo</label><div class="valor">' + (n.modeloequip || '') + '</div></div>';
+        html += '</div>';
+        html += '<div class="row">';
+        html += '<div class="field-group"><label>Código Ativo</label><div class="valor">' + (n.codigopeca || '') + '</div></div>';
+        html += '<div class="field-group"><label>Designação</label><div class="valor">' + (n.nomepeca || '') + '</div></div>';
+        html += '<div class="field-group"><label>Nº Série</label><div class="valor">' + (n.serieequip || '') + '</div></div>';
+        html += '</div>';
+        html += '<div class="row">';
+        html += '<div class="field-group"><label>Ano Fabrico</label><div class="valor">' + (n.anofabrico || '') + '</div></div>';
+        html += '<div class="field-group"><label>Data Instalação</label><div class="valor">' + (dataC || '') + '</div></div>';
+        html += '<div class="field-group"><label>Garantia</label><div class="valor">' + (n.sobgarantia || '') + '</div></div>';
+        html += '</div>';
+        html += '</div>';
+        
+        // ========== DESCRIÇÃO ==========
+        html += '<div class="secao"><div class="secao-titulo">📝 DESCRIÇÃO</div>';
+        html += '<div class="texto-cheio">' + (n.descavaria || '') + '</div>';
+        html += '<div style="margin-top:8px;"><label style="font-weight:600;font-size:10px;">Impacto</label><div class="texto-cheio">' + (n.impacto || '') + '</div></div>';
+        html += '</div>';
+        
+        // ========== AÇÕES ==========
+        html += '<div class="secao"><div class="secao-titulo">🔧 AÇÕES</div>';
+        html += '<div class="row">';
+        html += '<div class="field-group"><label>Correção Imediata</label><div class="texto-cheio">' + (n.correcaoimediata || '') + '</div></div>';
+        html += '<div class="field-group"><label>Ação Preventiva</label><div class="texto-cheio">' + (n.recomendacao || '') + '</div></div>';
+        html += '</div>';
+        html += '<div class="row">';
+        html += '<div class="field-group"><label>Responsável</label><div class="valor">' + (n.respcorrecao || '') + '</div></div>';
+        html += '<div class="field-group"><label>Data Limite</label><div class="valor">' + (n.datalimitecorretiva || '') + '</div></div>';
+        html += '</div>';
+        html += '</div>';
+        
+        // ========== VERIFICAÇÃO ==========
+        html += '<div class="secao"><div class="secao-titulo">✅ VERIFICAÇÃO</div>';
+        html += '<div class="row">';
+        html += '<div class="field-group"><label>Verificado por</label><div class="valor">' + (n.verificadopor || '') + '</div></div>';
+        html += '<div class="field-group"><label>Cargo</label><div class="valor">' + (n.cargoverificador || '') + '</div></div>';
+        html += '<div class="field-group"><label>Data</label><div class="valor">' + (dataV || '') + '</div></div>';
+        html += '</div>';
+        html += '<div class="row">';
+        html += '<div class="field-group"><label>Status</label><div class="valor" style="font-weight:bold;color:' + (n.statusncr === 'Fechado' ? '#28a745' : '#856404') + ';">' + (n.statusncr || 'Em andamento') + '</div></div>';
+        html += '<div class="field-group"><label>Data Fecho</label><div class="valor">' + (n.datafecho ? new Date(n.datafecho + 'T00:00:00').toLocaleDateString('pt-PT') : '') + '</div></div>';
+        html += '</div>';
+        html += '</div>';
+        
+        // ========== OBSERVAÇÕES ==========
+        if (n.outrascausas) {
+            html += '<div class="secao"><div class="secao-titulo">📌 OBSERVAÇÕES</div>';
+            html += '<div class="texto-cheio">' + n.outrascausas + '</div></div>';
+        }
+        
+        // ========== ASSINATURAS ==========
+        html += '<div class="secao"><div class="secao-titulo">✍️ ASSINATURAS</div>';
+        html += '<div class="assinaturas">';
+        html += '<div class="assinatura"><div class="linha"></div><div class="nome">Técnico</div><div class="cargo">(Assinatura)</div></div>';
+        html += '<div class="assinatura"><div class="linha"></div><div class="nome">Responsável / Cliente</div><div class="cargo">(Assinatura)</div></div>';
+        html += '</div></div>';
+        
+        html += '</div>'; // fim ncr-pagina
+    });
+    
+    document.getElementById('listaNCRs').innerHTML = html;
+    document.getElementById('totalNCRs').innerText = ncrs.length + ' NCR(s) encontrado(s)';
+}
+
+document.getElementById('clienteInput').addEventListener('keypress', function(e) { if (e.key === 'Enter') consultar(); });
+if (clienteURL) setTimeout(consultar, 500);
 </script>
 </body>
 </html>
