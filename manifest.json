@@ -1,0 +1,26 @@
+{
+  "name": "Portal de Consulta - Gestão de Avarias",
+  "short_name": "Avarias",
+  "description": "Portal de consulta de NCRs e Guias de Avarias",
+  "start_url": "/guia-avarias/consulta_cliente.html",
+  "scope": "/guia-avarias/",
+  "display": "standalone",
+  "background_color": "#1a3a4f",
+  "theme_color": "#1a3a4f",
+  "orientation": "portrait-primary",
+  "lang": "pt",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

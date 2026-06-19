@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Portal de Consulta</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a3a4f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Avarias">
+<link rel="apple-touch-icon" href="icon-192.png">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -786,6 +792,15 @@ function imprimir() {
     document.getElementById('modalOverlay').classList.add('aberto');
     printArea.style.display = 'none';
     printArea.innerHTML     = '';
+}
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function() {
+    navigator.serviceWorker.register("/guia-avarias/sw.js")
+      .then(function(r) { console.log("SW registado:", r.scope); })
+      .catch(function(e) { console.log("SW erro:", e); });
+  });
 }
 </script>
 </body>
