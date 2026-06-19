@@ -221,10 +221,125 @@ tbody tr:last-child td { border-bottom: none; }
 }
 #printArea { display: none; }
 
-@media (max-width: 600px) {
+/* ── MOBILE ── */
+@media (max-width: 700px) {
+    .portal-body { padding: 14px 10px; }
+    .portal-header { padding: 10px 14px; }
+    .portal-header h1 { font-size: 0.85rem; }
+
+    /* Stats */
+    .stats-row { gap: 8px; }
+    .stat-card { min-width: 80px; padding: 10px 8px; }
+    .stat-card .num { font-size: 1.4rem; }
+    .stat-card .lbl { font-size: 10px; }
+
+    /* Filtros */
+    .filtros { gap: 6px; }
+    .filtros input[type="text"] { font-size: 13px; }
+    .btn-filtro { padding: 6px 10px; font-size: 11px; }
+
+    /* Tabela — scroll horizontal */
+    .tabela-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table { min-width: 500px; font-size: 12px; }
+    thead th { padding: 9px 8px; font-size: 11px; }
+    tbody td { padding: 8px; }
+
+    /* Modal */
+    #modalOverlay.aberto { padding: 0; align-items: flex-end; }
+    .modal-doc { border-radius: 16px 16px 0 0; max-height: 95vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .modal-toolbar { padding: 10px 14px; }
+    .modal-toolbar span { font-size: 12px; }
+    .btn-imprimir { padding: 7px 12px; font-size: 12px; }
+    .btn-fechar   { padding: 7px 10px; font-size: 12px; }
+
+    /* Documento */
+    .doc-body { padding: 12px; }
+    .doc-cab-topo { padding: 10px 12px; gap: 10px; }
+    .doc-cab-titulo h2 { font-size: 14px; }
+    .doc-cab-titulo p  { font-size: 10px; }
+    .doc-cab-logo { width: 48px; height: 48px; }
+    .doc-cab-logo-fallback { width: 48px; height: 48px; }
+    .doc-cab-qr { width: 48px; height: 48px; margin-right: 0; }
+    .doc-cab-qr img { width: 48px; height: 48px; }
+    .doc-cab-info { padding: 7px 10px; font-size: 11px; gap: 3px 16px; }
+
+    /* Campos — coluna única no mobile */
+    .campo-row { flex-direction: column; gap: 8px; }
     .campo { min-width: 100%; }
-    .stat-card { min-width: 80px; }
-    .ass-linha { flex-direction: column; }
+    .campo label { font-size: 10px; }
+    .campo .valor { font-size: 12px; padding: 6px 8px; }
+    .campo .valor.textarea { min-height: 60px; }
+
+    /* Tabela equipamento — lista no mobile */
+    .equip-table { font-size: 12px; }
+    .equip-table th { font-size: 10px; padding: 3px 4px 1px 0; }
+    .equip-table td { padding: 3px 4px 6px 0; font-size: 12px; }
+
+    /* Secção */
+    .secao { padding: 12px; margin-bottom: 10px; }
+    .secao-titulo { font-size: 13px; margin-bottom: 10px; }
+
+    /* Fotos */
+    .fotos-grid { gap: 8px; }
+    .foto-item { width: 140px; }
+    .foto-item img { height: 120px; }
+
+    /* Assinaturas */
+    .ass-linha { flex-direction: column; gap: 20px; }
+    .ass-bloco { min-width: 100%; }
+    .canvas-ass { height: 100px; }
+    .btn-ass.confirmar { width: 100%; }
+}
+
+/* ── PRINT ── */
+@media print {
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    #loginPage, #portalPage { display: none !important; }
+    #printArea { display: block !important; }
+    body { background: white !important; margin: 0 !important; padding: 0 !important; }
+    @page { margin: 0.8cm; size: A4 portrait; }
+
+    #printArea { width: 100% !important; max-width: 100% !important; }
+    #printArea .doc-cabecalho { border: 3px solid #1a3a4f !important; border-radius: 8px !important; overflow: hidden !important; margin-bottom: 10px !important; }
+    #printArea .doc-cab-topo { background: #1a3a4f !important; padding: 12px 16px !important; display: flex !important; align-items: center !important; gap: 12px !important; }
+    #printArea .doc-cab-titulo h2 { color: white !important; font-size: 18px !important; }
+    #printArea .doc-cab-titulo p  { color: #c7b27b !important; font-size: 11px !important; }
+    #printArea .doc-cab-logo { display: block !important; width: 60px !important; height: 60px !important; }
+    #printArea .doc-cab-logo-fallback { display: none !important; }
+    #printArea .doc-cab-qr { width: 60px !important; height: 60px !important; margin-right: 10px !important; }
+    #printArea .doc-cab-qr img { display: block !important; width: 60px !important; height: 60px !important; }
+    #printArea .doc-cab-info { padding: 8px 14px !important; font-size: 12px !important; display: flex !important; flex-wrap: wrap !important; gap: 4px 30px !important; border-bottom: 1px solid #e0e0e0 !important; background: white !important; }
+
+    #printArea .secao { background: white !important; border: 1px solid #ccc !important; padding: 10px !important; margin-bottom: 8px !important; border-radius: 6px !important; }
+    #printArea .secao-critica { page-break-inside: avoid !important; }
+    #printArea .secao-titulo { font-size: 13px !important; color: #1a3a4f !important; margin-bottom: 10px !important; }
+
+    #printArea .campo-row { display: flex !important; flex-wrap: wrap !important; gap: 8px !important; margin-bottom: 6px !important; }
+    #printArea .campo { flex: 1 !important; min-width: 140px !important; }
+    #printArea .campo label { font-size: 10px !important; }
+    #printArea .campo .valor { font-size: 12px !important; padding: 5px 8px !important; border: 1px solid #dee2e6 !important; background: white !important; min-height: 28px !important; }
+    #printArea .campo .valor.textarea { min-height: 60px !important; white-space: pre-wrap !important; }
+
+    #printArea .equip-table { width: 100% !important; border-collapse: collapse !important; font-size: 12px !important; }
+    #printArea .equip-table th { font-size: 10px !important; color: #666 !important; padding: 3px 6px 1px 0 !important; }
+    #printArea .equip-table td { color: #1a3a4f !important; border-bottom: 1px solid #dee2e6 !important; padding: 3px 6px 6px 0 !important; }
+
+    #printArea .fotos-grid { display: flex !important; flex-wrap: wrap !important; gap: 10px !important; }
+    #printArea .foto-item { display: inline-block !important; width: 160px !important; page-break-inside: avoid !important; border: 1px solid #dee2e6 !important; border-radius: 6px !important; overflow: hidden !important; }
+    #printArea .foto-item img { display: block !important; width: 100% !important; height: 140px !important; object-fit: cover !important; }
+    #printArea .foto-legenda { font-size: 10px !important; padding: 3px 6px !important; }
+
+    #printArea .ass-linha { display: flex !important; gap: 30px !important; margin-top: 14px !important; page-break-inside: avoid !important; }
+    #printArea .ass-bloco { flex: 1 !important; text-align: center !important; }
+    #printArea .ass-linha-topo { border-bottom: 1px solid #000 !important; height: 55px !important; display: flex !important; align-items: center !important; justify-content: center !important; margin-bottom: 4px !important; }
+    #printArea .ass-linha-topo img { max-height: 53px !important; max-width: 100% !important; display: block !important; }
+    #printArea .ass-nome { font-weight: bold !important; font-size: 12px !important; }
+    #printArea .ass-data { font-size: 11px !important; }
+    #printArea .canvas-ass { display: none !important; }
+    #printArea .ass-botoes { display: none !important; }
+    #printArea .ass-msg { display: none !important; }
+    #printArea .btn-ass.confirmar { display: none !important; }
+    #printArea .ass-confirmado { background: #d4edda !important; border: 1px solid #28a745 !important; border-radius: 6px !important; padding: 6px 12px !important; font-size: 12px !important; margin-top: 8px !important; }
 }
 </style>
 </head>
