@@ -1,1 +1,33 @@
+name: Supabase Keep Alive
 
+on:
+  schedule:
+    - cron: '0 9 * * 1,4'  # Corre às 9h UTC todas as Segundas e Quintas-feiras
+  workflow_dispatch:         # Permite correr manualmente no GitHub
+
+jobs:
+  ping-supabase:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Ping Projeto 1 (aluqpenxefjfryunzlsm)
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            "${{ secrets.SUPABASE_URL_1 }}/rest/v1/?apikey=${{ secrets.SUPABASE_ANON_KEY_1 }}")
+          echo "Projeto 1 - HTTP status: $STATUS"
+          if [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 500 ]; then
+            echo "✅ Projeto 1 está ativo"
+          else
+            echo "⚠️ Projeto 1 pode ter um problema (status $STATUS)"
+          fi
+
+      - name: Ping Projeto 2 (xcaihvsgirqsxxccgvgr)
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            "${{ secrets.SUPABASE_URL_2 }}/rest/v1/?apikey=${{ secrets.SUPABASE_ANON_KEY_2 }}")
+          echo "Projeto 2 - HTTP status: $STATUS"
+          if [ "$STATUS" -ge 200 ] && [ "$STATUS" -lt 500 ]; then
+            echo "✅ Projeto 2 está ativo"
+          else
+            echo "⚠️ Projeto 2 pode ter um problema (status $STATUS)"
+          fi
